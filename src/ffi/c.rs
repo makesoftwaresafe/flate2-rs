@@ -51,31 +51,8 @@ impl Default for StreamWrapper {
                 opaque: ptr::null_mut(),
                 state: ptr::null_mut(),
 
-                #[cfg(any(
-                    // zlib-ng
-                    feature = "zlib-ng",
-                    // libz-sys
-                    all(not(feature = "cloudflare_zlib"), not(feature = "zlib-ng"))
-                ))]
                 zalloc: allocator::zalloc,
-                #[cfg(any(
-                    // zlib-ng
-                    feature = "zlib-ng",
-                    // libz-sys
-                    all(not(feature = "cloudflare_zlib"), not(feature = "zlib-ng"))
-                ))]
                 zfree: allocator::zfree,
-
-                #[cfg(
-                    // cloudflare-zlib
-                    all(feature = "cloudflare_zlib", not(feature = "zlib-ng")),
-                )]
-                zalloc: Some(allocator::zalloc),
-                #[cfg(
-                    // cloudflare-zlib
-                    all(feature = "cloudflare_zlib", not(feature = "zlib-ng")),
-                )]
-                zfree: Some(allocator::zfree),
             })),
         }
     }
@@ -91,14 +68,6 @@ impl Drop for StreamWrapper {
     }
 }
 
-#[cfg(any(
-    // zlib-ng
-    feature = "zlib-ng",
-    // cloudflare-zlib
-    all(feature = "cloudflare_zlib", not(feature = "zlib-ng")),
-    // libz-sys
-    all(not(feature = "cloudflare_zlib"), not(feature = "zlib-ng")),
-))]
 mod allocator {
     use super::*;
 
@@ -455,16 +424,7 @@ mod c_backend {
     #[cfg(feature = "zlib-ng")]
     use libz_ng_sys as libz;
 
-    #[cfg(
-        // cloudflare-zlib
-        all(feature = "cloudflare_zlib", not(feature = "zlib-ng")),
-    )]
-    use cloudflare_zlib_sys as libz;
-
-    #[cfg(
-        // libz-sys
-        all(not(feature = "cloudflare_zlib"), not(feature = "zlib-ng")),
-    )]
+    #[cfg(not(feature = "zlib-ng"))]
     use libz_sys as libz;
 
     pub use libz::deflate as mz_deflate;
