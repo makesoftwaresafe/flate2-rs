@@ -47,7 +47,6 @@
 //!
 //! * zlib-ng
 //! * zlib-rs
-//! * cloudflare_zlib
 //! * miniz_oxide
 //!
 //! # Organization
