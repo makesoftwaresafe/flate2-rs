@@ -55,24 +55,29 @@ mod inner {
     }
 
     impl Crc {
+        #[inline]
         pub fn sum(&self) -> u32 {
             self.hasher.clone().finalize()
         }
 
+        #[inline]
         pub fn amount(&self) -> u32 {
             self.amt
         }
 
+        #[inline]
         pub fn update(&mut self, data: &[u8]) {
             self.amt = self.amt.wrapping_add(data.len() as u32);
             self.hasher.update(data);
         }
 
+        #[inline]
         pub fn reset(&mut self) {
             self.amt = 0;
             self.hasher.reset();
         }
 
+        #[inline]
         pub fn combine(&mut self, additional_crc: &Self) {
             self.amt = self.amt.wrapping_add(additional_crc.amt);
             self.hasher.combine(&additional_crc.hasher);
@@ -89,24 +94,29 @@ mod inner {
     }
 
     impl Crc {
+        #[inline]
         pub fn sum(&self) -> u32 {
             self.state
         }
 
+        #[inline]
         pub fn amount(&self) -> u32 {
             self.consumed as u32
         }
 
+        #[inline]
         pub fn update(&mut self, data: &[u8]) {
             self.consumed = self.consumed.wrapping_add(data.len() as u64);
             self.state = zlib_rs::crc32::crc32(self.state, data);
         }
 
+        #[inline]
         pub fn reset(&mut self) {
             self.consumed = 0;
             self.state = 0
         }
 
+        #[inline]
         pub fn combine(&mut self, additional_crc: &Self) {
             self.consumed = self.consumed.wrapping_add(additional_crc.consumed);
             self.state = zlib_rs::crc32::crc32_combine(
