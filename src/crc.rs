@@ -4,8 +4,6 @@ use std::io;
 use std::io::prelude::*;
 
 /// The CRC calculated by a [`CrcReader`].
-///
-/// [`CrcReader`]: struct.CrcReader.html
 #[derive(Debug, Default)]
 pub struct Crc {
     inner: inner::Crc,
@@ -33,7 +31,9 @@ impl Crc {
         self.inner.update(data);
     }
 
-    /// Reset the CRC.
+    /// Reset the CRC, to start a new hash.
+    ///
+    /// Do this in favor of creating a new `Crc` instance.
     pub fn reset(&mut self) {
         self.inner.reset();
     }
