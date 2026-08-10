@@ -1,0 +1,25 @@
+[package]
+name = "flate2_example_no_std"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[features]
+qemu = ["dep:qemu-exit", "uefi/qemu"]
+
+[dependencies]
+log = "0.4"
+flate2 = { path = "../../", default-features = false, features = ["rust_backend"] }
+
+[target.'cfg(target_os = "uefi")'.dependencies]
+uefi = { version = "0.39.0", features = ["logger", "panic_handler", "global_allocator"] }
+qemu-exit = { version = "4", optional = true }
+
+[lints.rust.unexpected_cfgs]
+level = "warn"
+priority = 0
+check-cfg = [
+    ## Enables `no_std` support by using `core::error` and `alloc::io`.
+    ## Requires at least nightly 2026-07-19.
+    "cfg(flate2_unstable_nightly_alloc_io)",
+]

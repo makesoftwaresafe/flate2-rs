@@ -1,0 +1,3 @@
+[target.'cfg(all(target_arch = "x86_64", target_os = "uefi"))']
+rustflags = ["--cfg", "flate2_unstable_nightly_alloc_io"]
+runner = "./run.uefi.sh"

@@ -125,6 +125,24 @@ jobs:
       # Testing the `no_std` confirmation is done above.
     - run: cargo build ${{ matrix.flags }} --target ${{ matrix.target }} --no-default-features --features rust_backend
 
+  no_std_example:
+    name: no_std (Example)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64-unknown-uefi, x86_64-unknown-linux-gnu]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Rust
+      run: rustup update nightly && rustup default nightly
+    - name: Install Target
+      run: rustup target add ${{ matrix.target }}
+    - name: Install QEMU
+      run: sudo apt update && sudo apt install qemu-system qemu-utils ovmf -y && sudo chmod +x ./examples/no_std/run.uefi.sh
+      if: matrix.target == 'x86_64-unknown-uefi'
+    - run: cargo run --target ${{ matrix.target }} --features qemu
+      working-directory: ./examples/no_std
+
   minimum:
     name: Minimum Rust compiler
     runs-on: ${{ matrix.os }}
